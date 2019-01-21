@@ -1,0 +1,16 @@
+
++ Forest information
+[System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest()
+
++ Domain information
+[System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()
+
++ Local computer’s site information
+[System.DirectoryServices.ActiveDirectory.ActiveDirectorySite]::GetComputerSite()
+
++ Forest trusts
+$ForestRootDomain = 'corp.local'
+([System.DirectoryServices.ActiveDirectory.Forest]::GetForest((New-Object System.DirectoryServices.ActiveDirectory.DirectoryContext('Forest', $ForestRootDomain)))).GetAllTrustRelationships()
+
++ Domain trusts
+([System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()).GetAllTrustRelationships()
