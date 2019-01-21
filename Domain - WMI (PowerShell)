@@ -1,0 +1,48 @@
+
++ Usuarios 
+Get-WmiObject -Class Win32_USERACCOUNT -ComputerName host.corp.local
+
++ Grupos
+Get-WmiObject -Class Win32_GROUP -ComputerName host.corp.local
+
++Antivirus
+Get-WmiObject -Namespace "root\SecurityCenter2" -Class AntiVirusProduct -ComputerName host.corp.local
+
++ Info del sistema
+Get-WmiObject -Class Win32_COMPUTERSYSTEM -ComputerName host.corp.local
+Get-WmiObject -Class Win32_OS -ComputerName host.corp.local
+
++ Parches de Windows aplicados
+Get-WmiObject -Class Win32_OperatingSystemQFE -ComputerName host.corp.local
+
++ Procesos
+Get-WmiObject -Class Win32_Process -ComputerName host.corp.local
+
++ Servicios
+Get-WmiObject -Class Win32_Service -ComputerName host.corp.local
+
++ Software instalado
+Get-WmiObject -Class Win32_Product -ComputerName host.corp.local
+Get-WmiObject -Class Win32_SOFTWAREELEMENT -ComputerName host.corp.local
+Get-WmiObject -Class Win32_SOFTWAREFEATURE -ComputerName host.corp.local
+
++ Drivers
+Get-WmiObject -Class Win32_SystemDriver -ComputerName host.corp.local
+
++ Startup
+Get-WmiObject -Class Win32_StartupCommand -ComputerName host.corp.local
+Get-WmiObject -Class Win32_ProcessStartup -ComputerName host.corp.local
+
++ Quién y cómo logea 
+Get-WmiObject -Class Win32_NetworkLoginProfile -ComputerName host.corp.local
+Get-WmiObject -Class Win32_LogonSession -ComputerName host.corp.local
+
++ Rdesktop info
+Get-WmiObject -Namespace "root\cimv2\TerminalServices" -Class Win32_TerminalServiceSetting -ComputerName host.corp.local
+$rd = Get-WmiObject -Namespace "root\cimv2\TerminalServices" -Class Win32_TerminalServiceSetting -ComputerName host.corp.local
+$rd.SetAllowTSConnections(1)
+$rd.SetAllowTSConnections(0)
+
++ Shares
+Get-WmiObject -Class Win32_share -ComputerName host.corp.local
+get-wmiobject -class "win32_share" -namespace "root\CIMV2" -computer "host.corp.local"
