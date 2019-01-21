@@ -1,0 +1,77 @@
+https://gist.github.com/HarmJ0y/3328d954607d71362e3c powerview 2.0 tricks
+https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993 powerview 3.0 tricks
+https://www.harmj0y.net/blog/powershell/the-powerview-powerusage-series-3/
+https://blog.stealthbits.com/exploiting-weak-active-directory-permissions-with-powersploit/
+https://blog.cptjesus.com/posts/newbloodhoundingestor
+https://www.blackhat.com/docs/us-17/wednesday/us-17-Robbins-An-ACE-Up-The-Sleeve-Designing-Active-Directory-DACL-Backdoors-wp.pdf
+https://github.com/HarmJ0y/CheatSheets/blob/master/PowerView.pdf
+https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993
+https://github.com/tevora-threat/SharpView
+
+#### POWERVIEW ACEPTA WILDCARDS
+
+.\SharpView.exe Get-DomainUser -Server host.corp.local -Domain corp.local -Identity user
+
++ Listar usuarios e información
+Get-DomainUser -Domain corp.local # obtener usuarios del dominio indicado
+Get-DomainUser -SPN -Credential $cred -SearchBase 'LDAP://dc.corp.local/DC=corp,DC=local'
+Get-DomainUser -Credential $cred -Server dc.corp.local # obtener usuarios del dominio con las credenciales y DC indicados
+Get-DomainUser -ADSpath "LDAP://OU=secret,DC=corp,DC=local 
+get-Domainuser -Credential $cred -Server host.corp.local
+get-Domainuser -Credential $cred -Server dc.host.local | select samAccountName, logoncount, lastlogon  
+
++ Listar equipos y servidores del dominio
+Get-DomainComputer -SearchBase 'LDAP://dc.corp.local/DC=corp,DC=local'
+Get-DomainComputer -identity planetanamek -SearchBase 'LDAP://dc.corp.local/DC=corp,DC=local'  | Select-Object -ExpandProperty serviceprincipalname
+Get-DomainComputer # maquinas del dominio actual
+Get-DomainComputer -SPN mssql* # servidores mssql del dominio actual
+Get-DomainComputer -Domain corp.local # maquinas en el dominio indicado
+Get-DomainComputer -Domain corp.local -FullData # devuelve los objetos completos de las maquinas en el dominio indicado
+
++ Obtener shares 
+Get-NetShare -ComputerName sqlserver # buscar shares en la máquina indicada
+Get-DomainComputer | Get-NetShare # buscar shares en todas las máquinas del dominio
+Find-DomainShare -CheckShareAccess | fl | Out-File domain-shares.txt
+
++ Obtener miembros locales de un equipo remoto
+Get-DomainGroupMember -Verbose -ComputerName host.corp.local -GroupName "Administrators"
+Get-NetLocalGroup # Grupos locales
+Get-NetLocalGroup -ComputerName WINDOWSXP -Method API # Grupos locales máquina indicada Win32 API
+Get-NetLocalGroup -ComputerName WINDOWS7 -Method WinNT # Grupos locales de la maquina indicada WinNT
+
++ Obtener usuarios con sesión iniciada en una máquina
+Get-NetLoggedOn # usuarios logeados en la máquina local
+Get-NetLoggedon -ComputerName host.corp.local # usuarios logeados en la máquina especificada
+Get-DomainComputer | Get-NetLoggedon # usuarios logeados en todas las máquinas del dominio
+
++ Información de sesiones de red 
+Get-NetSession
+Get-NetSession -ComputerName host.corp.local 
+Get-Domaincomputer | Get-NetSession 
+
++ Sesiones RDP activas 
+Get-NetRDPSession # sesiones RDP activas en máquina local
+Get-NetRDPSession -ComputerName host.corp.local # sesiones RDP activas en la máquina indicada
+Get-Domaincomputer | Get-NetRDPSession # sesiones RDP activas en todos los DCs
+
++ Usuarios/grupos admin a través de GPO
+Get-DomainGPOComputerLocalGroupMapping -ComputerName host.corp.local 
+Get-DomainGPOComputerLocalGroupMapping -ComputerName host.corp.local -LocalGroup RDP
+Get-Domaincomputer | Get-DomainGPOComputerLocalGroupMapping
+
++ Buscar equipos del dominio donde el usuario actual sea administrador local
+Find-LocalAdminAccess # buscar máquinas donde el usuario local tenga permisos admin
+Find-LocalAdminAccess -Threads 10 # multithread
+Find-LocalAdminAccess -Domain corp.local # en el dominio indicado
+Find-LocalAdminAccess -ComputerFile hosts.txt # buscar en las máquinas indicadas en el .txt
+
++ Buscar equipos del dominio en los que haya sesión de nuestro objetivo (por defecto Domain Admins ojo nombre en español)
+Find-DomainUserLocation -CheckAccess
+Find-DomainUserLocation -Domain corp.local -UserIdentity dlopez 
+Find-DomainUserLocation -Threads 20 -ComputerUnconstrained
+Find-DomainUserLocation -AllowDelegation
+
++ Domain trusts
+Get-ForestTrust
+
+
